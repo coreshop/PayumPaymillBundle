@@ -1,0 +1,18 @@
+services:
+    CoreShop\Payum\PaymillBundle\Form\Payment\PaymillType:
+        tags:
+            - { name: coreshop.gateway_configuration_type, type: paymill }
+            - { name: form.type }
+
+    payum.paymill_gateway_factory:
+        class: Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder
+        arguments: [CoreShop\Payum\Paymill\PaymillGatewayFactory]
+        tags:
+            - {name: payum.gateway_factory_builder, factory: paymill }
+
+    CoreShop\Payum\PaymillBundle\Extension\ObtainTokenExtension:
+        public: true
+        arguments:
+            - '@coreshop.repository.order'
+        tags:
+            - { name: payum.extension, alias: paymill_obtain_token, factory: paymill, gateway: paymill, prepend: false }
